@@ -218,6 +218,9 @@
   <h2>Keeping it running</h2>
   <ul>
     <li>Routes keep moving with the screen off.</li>
+    <li>While a route or the joystick moves the point, apps also get a matching speed and
+    direction (a navigation app shows its arrow). Standing still or jumping to a new point
+    reports no movement.</li>
     <li>If the system kills the app, routes and the joystick come back by themselves and continue
     from where they should be now.</li>
     <li>After a <b>Force stop</b>, Android does not allow any restart until you open the app again;
@@ -270,6 +273,8 @@
     <li>New: working joystick, route recording and playback, road routes A → B, round trips,
     map point picking, better search, screen-off and kill-proof playback.</li>
     <li>Fixed crashes and bugs from the original (favorites, search, joystick and more).</li>
+    <li>Realistic motion: speed and direction are worked out from how the point moves, so
+    navigation apps show a heading arrow and follow routes and the joystick smoothly.</li>
   </ul>
   <p><b>Languages and tools</b>: Kotlin, Gradle (Groovy DSL), XML, Bash.</p>
   <div class="scroll">

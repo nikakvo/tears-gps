@@ -6,7 +6,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
-def tagName = '1.0.0'
+def tagName = '1.0.1'
 
 // Optional release signing from local.properties (untracked): storeFile, storePassword,
 // keyAlias, keyPassword. Without it the release build is signed with the debug key.
@@ -23,7 +23,7 @@ android {
         applicationId "io.github.nikakvo.tearsgps"
         minSdk 27
         targetSdk 34
-        versionCode 100
+        versionCode 101
         versionName tagName
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "TAG_NAME", "\"${tagName}\"")

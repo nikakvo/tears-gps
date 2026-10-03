@@ -36,6 +36,18 @@ object LocationHook {
     @Volatile private var newlng: Double = 0.0
     @Volatile private var accuracy: Float = 10.0f
     @Volatile private var mLastUpdated: Long = 0
+
+    // Motion derived from how the base point moves (route playback / joystick), so apps get a
+    // real speed + bearing and can animate smoothly instead of jumping between fixes.
+    private const val STOP_AFTER_MS = 3000L
+    private const val MAX_SPEED = 150f          // m/s, ignore teleports (manual point moves)
+    private const val SMOOTH = 0.5f             // EMA weight of the newest sample
+    @Volatile private var curSpeed: Float = 0f
+    @Volatile private var curBearing: Float = 0f
+    @Volatile private var moving = false
+    private var lastBaseLat = Double.NaN
+    private var lastBaseLng = Double.NaN
+    private var lastMoveTime = 0L
     private val rand = Random()
 
     private lateinit var module: XposedModule
@@ -61,9 +73,11 @@ object LocationHook {
     private fun refresh(interval: Long) {
         if (System.currentTimeMillis() - mLastUpdated <= interval) return
         try {
-            mLastUpdated = System.currentTimeMillis()
+            val now = System.currentTimeMillis()
+            mLastUpdated = now
             val lat = baseLat
             val lng = baseLng
+            updateMotion(lat, lng, now)
             if (isRandomPosition) {
                 val x = (rand.nextInt(50) - 15).toDouble()
                 val y = (rand.nextInt(50) - 15).toDouble()
@@ -78,6 +92,50 @@ object LocationHook {
             accuracy = accuracySetting.toFloat()
         } catch (e: Exception) {
             module.log(Log.ERROR, TAG, "failed to read settings", e)
+        }
+    }
+
+    /**
+     * Speed/bearing from successive base positions. A "no change" sample does not reset the
+     * clock, so the next change is measured over the whole interval (correct average even when
+     * playback ticks and location reports are not in sync); EMA smooths the rest.
+     */
+    @Synchronized
+    private fun updateMotion(lat: Double, lng: Double, now: Long) {
+        if (lastBaseLat.isNaN()) {
+            lastBaseLat = lat; lastBaseLng = lng; lastMoveTime = now
+            return
+        }
+        if (lat != lastBaseLat || lng != lastBaseLng) {
+            val dt = now - lastMoveTime
+            val r = FloatArray(2)
+            Location.distanceBetween(lastBaseLat, lastBaseLng, lat, lng, r)
+            val sample = if (dt > 0) r[0] / (dt / 1000f) else Float.MAX_VALUE
+            if (dt in 1L..10_000L && sample <= MAX_SPEED) {
+                curSpeed = if (moving) curSpeed + SMOOTH * (sample - curSpeed) else sample
+                if (r[0] > 0.5f) curBearing = (r[1] + 360f) % 360f
+                moving = true
+            } else {
+                // Teleport (map tap, search) or a long pause: start fresh, no fake velocity.
+                curSpeed = 0f
+                moving = false
+            }
+            lastBaseLat = lat; lastBaseLng = lng; lastMoveTime = now
+        } else if (moving && now - lastMoveTime > STOP_AFTER_MS) {
+            curSpeed = 0f
+            moving = false
+        }
+    }
+
+    /** Speed + bearing like a real receiver: bearing only while moving. */
+    private fun applyMotion(loc: Location) {
+        loc.speed = curSpeed
+        loc.speedAccuracyMetersPerSecond = if (moving) 0.5f else 0F
+        if (moving && curSpeed > 0.3f) {
+            loc.bearing = curBearing
+            loc.bearingAccuracyDegrees = 10f
+        } else {
+            loc.removeBearing()
         }
     }
 
@@ -100,10 +158,8 @@ object LocationHook {
             latitude = newlat
             longitude = newlng
             altitude = 0.0
-            speed = 0F
             accuracy = this@LocationHook.accuracy
-            speedAccuracyMetersPerSecond = 0F
-        }
+        }.also { applyMotion(it) }
 
     /** A fake fix that keeps timing/bearing data from the real one (null -> fresh fix). */
     private fun fakeFrom(origin: Location?): Location {
@@ -111,16 +167,12 @@ object LocationHook {
         return Location(origin.provider).apply {
             time = origin.time
             accuracy = this@LocationHook.accuracy
-            bearing = origin.bearing
-            bearingAccuracyDegrees = origin.bearingAccuracyDegrees
             elapsedRealtimeNanos = origin.elapsedRealtimeNanos
             verticalAccuracyMeters = origin.verticalAccuracyMeters
             latitude = newlat
             longitude = newlng
             altitude = 0.0
-            speed = 0F
-            speedAccuracyMetersPerSecond = 0F
-        }
+        }.also { applyMotion(it) }
     }
 
     /** Overwrite a Location in place with the fake position (keeps time/bearing data). */
@@ -128,9 +180,8 @@ object LocationHook {
         loc.latitude = newlat
         loc.longitude = newlng
         loc.altitude = 0.0
-        loc.speed = 0F
         loc.accuracy = accuracy
-        loc.speedAccuracyMetersPerSecond = 0F
+        applyMotion(loc)
         clearMockFlag(loc)
     }
 

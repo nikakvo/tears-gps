@@ -16,6 +16,11 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.view.MenuItem
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnAttach
+import androidx.core.view.updatePadding
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -181,6 +186,17 @@ class ActivitySettings : AppCompatActivity() {
                     }
                     true
                 }
+            }
+        }
+
+        // Edge-to-edge: keep the last item above the navigation bar.
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            listView.clipToPadding = false
+            view.doOnAttach {
+                val bottom = ViewCompat.getRootWindowInsets(it)
+                    ?.getInsets(WindowInsetsCompat.Type.systemBars())?.bottom ?: 0
+                listView.updatePadding(bottom = bottom)
             }
         }
 
