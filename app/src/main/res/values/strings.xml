@@ -1,0 +1,118 @@
+<resources>
+
+    <!-- Home -->
+    <string name="app_name">Tears GPS</string>
+    <string name="xposed_desc">A GPS setter based on the LSPosed framework.</string>
+    <string name="search">Search</string>
+    <string name="address">United States</string>
+    <string name="favorites">Favorites</string>
+    <string name="address_not_found">Address not found</string>
+    <string name="cant_save">Can\'t save</string>
+    <string name="location_set">Location set</string>
+    <string name="title">Location set notification</string>
+    <string name="des">Show notification when location is set</string>
+    <string name="location_unset">Location unset</string>
+    <string name="no_internet">No Internet</string>
+    <string name="getlocation_desc">Get current location</string>
+    <string name="addfavorite_desc">Add favorite</string>
+
+    <!-- Errors -->
+    <string name="error_xposed_module_missing">Xposed module is not enabled</string>
+    <string name="error_xposed_module_missing_desc">Enable this module in LSPosed Manager</string>
+
+    <!-- About -->
+    <string name="about">About</string>
+    <string name="about_info">A GPS setter based on the LSPosed framework.</string>
+
+    <!-- Update -->
+    <string name="download_manager_description">Downloading update</string>
+    <string name="update_button">Update</string>
+    <string name="update_available">Update available</string>
+    <string name="bs_update_download_failed">Failed</string>
+
+
+    <!-- Dialog -->
+    <string name="add_fav_dialog_title">Add favorite</string>
+    <string name="dialog_button_add">Add</string>
+    <string name="location_not_select">Location not selected</string>
+    <string name="save">Save</string>
+
+    <!-- SettingActivity -->
+    <string name="xposed">Xposed</string>
+    <string name="settings">Settings</string>
+    <string name="settings_of_accuracy">Accuracy</string>
+    <string name="preference_category_general">General</string>
+    <string name="enter_valid_input">Enter a valid number</string>
+    <string name="delete_favorite_item">Delete favorite</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="check_update">Check for updates</string>
+    <string name="check_update_summary">Automatically check the latest version from GitHub</string>
+    <string name="enable_joystick">Use joystick</string>
+    <string name="enable_joystick_summary">Floating joystick to walk the simulated location (tap to start or stop)</string>
+    <string name="joystick_enabled">Joystick enabled</string>
+    <string name="joystick_disabled">Joystick disabled</string>
+    <string name="joystick_speed">Joystick speed</string>
+    <string name="joystick_channel">Joystick</string>
+    <string name="joystick_notification_title">Joystick active</string>
+    <string name="joystick_notification_text">Moving the simulated location</string>
+    <string name="joystick_stop">Stop</string>
+    <string name="joystick_record">Record</string>
+    <string name="joystick_save">Save</string>
+    <string name="joystick_discard">Discard</string>
+    <string name="joystick_recording_title">Recording route</string>
+    <string name="joystick_recording_text">Move with the joystick, then tap Save</string>
+    <string name="routes">Routes</string>
+    <string name="routes_empty">No routes yet. Start the joystick, tap Record in its notification, move around, then tap Save.</string>
+    <string name="route_default_name">Route %1$s</string>
+    <string name="route_saved">Saved: %1$s</string>
+    <string name="route_too_short">Route too short, not saved</string>
+    <string name="route_play">Play</string>
+    <string name="route_play_loop">Play in a loop</string>
+    <string name="route_rename">Rename</string>
+    <string name="route_delete">Delete</string>
+    <string name="route_deleted">Route deleted</string>
+    <string name="route_stop_playback">Stop playback</string>
+    <string name="route_channel">Route playback</string>
+    <string name="route_playing">Playing: %1$s</string>
+    <string name="route_loop">loop</string>
+    <string name="route_round_trip">Round trip (stay, then come back)</string>
+    <string name="route_stay_title">Stay at the destination for</string>
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours">%1$d h</string>
+    <string name="route_phase_out">→ B · %1$s / %2$s</string>
+    <string name="route_phase_stay">At destination · %1$s left</string>
+    <string name="route_phase_back">← A · %1$s / %2$s</string>
+    <string name="route_new">New route A → B</string>
+    <string name="route_from_hint">From (empty = current point)</string>
+    <string name="route_to_hint">To: address, place or lat, lon</string>
+    <string name="route_mode_car">Car</string>
+    <string name="route_mode_car_hint">Car follows the speed limit and road type of every stretch.</string>
+    <string name="route_mode_bike">Bike</string>
+    <string name="route_mode_foot">Foot</string>
+    <string name="route_create">Create</string>
+    <string name="route_later">Later</string>
+    <string name="route_attribution">Search and routing: © OpenStreetMap contributors · Nominatim · OSRM by FOSSGIS</string>
+    <string name="route_need_destination">Enter a destination</string>
+    <string name="route_calculating">Calculating route…</string>
+    <string name="route_current_point">Current point</string>
+    <string name="route_created">%1$s · %2$s</string>
+    <string name="route_failed">Route failed: %1$s</string>
+    <string name="route_place_not_found">Place not found: %1$s</string>
+    <string name="copy">Copy</string>
+    <string name="help">Help</string>
+    <string name="locating">Locating…</string>
+    <string name="copied">Copied</string>
+    <string name="coordinates_copied">Coordinates copied</string>
+    <string name="route_set_start">Route from here (A)</string>
+    <string name="route_set_destination">Route to here (B)</string>
+    <string name="route_start_set">Start set: %1$s. Long-press the destination next.</string>
+    <string name="advanced_hook">Hook system location</string>
+    <string name="advanced_summary">On: whole system. Off: only apps in the LSPosed scope</string>
+    <string name="random_position">Random location</string>
+    <string name="random_position_summary">Use a random location around the set location</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="app_update_failed">Update failed</string>
+    <string name="dark_theme">Dark theme</string>
+
+</resources>

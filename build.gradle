@@ -1,0 +1,21 @@
+// Top-level build file.
+// Toolchain: AGP 9.3.1 (built-in Kotlin) + Kotlin 2.4.20 + Gradle 9.5.0.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // AGP 9 ships built-in Kotlin; this pins the Kotlin Gradle plugin/compiler version it uses.
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20'
+    }
+}
+plugins {
+    id 'com.android.application' version '9.3.1' apply false
+    id 'com.google.devtools.ksp' version '2.3.12' apply false
+    id 'com.google.dagger.hilt.android' version '2.60.1' apply false
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+}

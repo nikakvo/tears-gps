@@ -1,0 +1,23 @@
+.DS_Store
+.idea
+*.jks
+local.properties
+
+*.iml
+.gradle
+.kotlin
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/build
+/captures
+.externalNativeBuild
+.cxx
+# Local icon pickers of build.sh (personal images, never committed)
+/icons/
+/icons-foss/
+/dist/

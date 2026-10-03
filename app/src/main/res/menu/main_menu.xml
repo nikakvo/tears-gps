@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+    <item
+        android:id="@+id/get_favorite"
+        android:title="@string/favorites"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_outline_favorite_list"/>
+
+    <item
+        android:id="@+id/routes"
+        android:title="@string/routes"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_play"/>
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_outline_settings_24"/>
+
+    <item
+        android:id="@+id/help"
+        android:title="@string/help"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_outline_info_24"/>
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_outline_info_24"/>
+
+
+
+</menu>

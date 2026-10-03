@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tears GPS — Help</title>
+<style>
+  :root {
+    --bg: #f6f7fb; --card: #ffffff; --text: #1b1d24; --muted: #5d6270;
+    --accent: #2f7de1; --accent2: #f59e0b; --border: #e2e5ee; --code: #eef1f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1116; --card: #181b23; --text: #e8eaf0; --muted: #9aa1b2;
+      --accent: #5aa2ff; --accent2: #fbbf24; --border: #262a35; --code: #11141b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 20px 16px 40px; background: var(--bg); color: var(--text);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .hero { text-align: center; margin: 8px 0 24px; }
+  .logo { position: relative; width: 132px; height: 132px; margin: 0 auto 14px; }
+  .ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--accent), var(--accent2), var(--accent), transparent 70%, var(--accent));
+    animation: spin 6s linear infinite;
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  }
+  .ring.inner { inset: 10px; animation-duration: 9s; animation-direction: reverse; opacity: .55; }
+  .logo img {
+    position: absolute; inset: 18px; width: calc(100% - 36px); height: calc(100% - 36px);
+    border-radius: 50%; object-fit: cover; box-shadow: 0 4px 18px rgba(0,0,0,.35);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .ring { animation: none; } }
+  h1 { margin: 0; font-size: 26px; letter-spacing: .3px; }
+  .tagline { color: var(--muted); margin-top: 4px; }
+  .badges { margin-top: 10px; }
+  .badge {
+    display: inline-block; margin: 3px; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--card); font-size: 12px; color: var(--muted);
+  }
+  section, details {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; margin: 0 0 14px;
+  }
+  h2 { font-size: 17px; margin: 0 0 8px; color: var(--accent); }
+  summary { cursor: pointer; font-weight: 600; color: var(--accent); font-size: 16px; }
+  details[open] summary { margin-bottom: 8px; }
+  p { margin: 6px 0; }
+  ol, ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  code {
+    background: var(--code); border: 1px solid var(--border); border-radius: 6px;
+    padding: 1px 5px; font-size: 13px; word-break: break-all;
+  }
+  pre {
+    background: var(--code); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px; overflow-x: auto; font-size: 12.5px; margin: 8px 0;
+  }
+  pre code { border: 0; padding: 0; background: none; word-break: normal; }
+  .cmd { position: relative; }
+  .cmd pre { padding-right: 76px; }
+  .copy {
+    position: absolute; top: 6px; right: 6px; padding: 4px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); color: var(--accent);
+    font: 600 12px sans-serif;
+  }
+  .copy.done { color: var(--accent2); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .scroll { overflow-x: auto; }
+  .note { border-left: 3px solid var(--accent2); padding: 4px 10px; color: var(--muted); margin: 8px 0; }
+  a { color: var(--accent); }
+  .credits li { margin: 6px 0; }
+  .footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">
+    <div class="ring"></div>
+    <div class="ring inner"></div>
+    <img src="{{ICON}}" alt="">
+  </div>
+  <h1>Tears GPS</h1>
+  <div class="tagline">A GPS setter based on the LSPosed framework</div>
+  <div class="badges">
+    <span class="badge">v{{VERSION}}</span>
+    <span class="badge">libxposed API 102</span>
+    <span class="badge">Android 8.1+</span>
+    <span class="badge">GPL-3.0</span>
+  </div>
+</div>
+
+<section>
+  <h2>What it does</h2>
+  <p>Tears GPS replaces your device location with a point you choose on the map. Apps see the
+  simulated position as a normal GPS fix, without Android's "mock location" setting.</p>
+  <p>It can also move that point: with a floating joystick, along routes you record, or along a
+  real road route from A to B by car, bike or on foot, with a realistic speed.</p>
+</section>
+
+<section>
+  <h2>Requirements</h2>
+  <ul>
+    <li>A rooted device (Magisk, KernelSU, SukiSU…) with Zygisk.</li>
+    <li><b>LSPosed with libxposed API 102</b> support (LSPosed 2.x).</li>
+    <li>Android 8.1 or newer.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Quick start</h2>
+  <ol>
+    <li>In LSPosed, enable <b>Tears GPS</b> and tick <b>System Framework</b> in its scope.</li>
+    <li>Reboot.</li>
+    <li>Open Tears GPS: no "module not active" message means it is connected to LSPosed.</li>
+    <li>Tap the map to choose a point, then press <b>▶</b>. Press <b>■</b> to stop.</li>
+  </ol>
+  <div class="note">Enable only one location module of this kind (e.g. GPS Setter) in LSPosed at a
+  time.</div>
+</section>
+
+<section>
+  <h2>System-wide or per app</h2>
+  <p><b>Settings → Hook system location</b></p>
+  <ul>
+    <li><b>On</b> — every app gets the simulated location (hooked inside the Android system).</li>
+    <li><b>Off</b> — only the apps you tick in the LSPosed scope are affected.</li>
+  </ul>
+  <p>The switch works live, no reboot needed. A reboot is only needed after changing the
+  System Framework entry in the LSPosed scope.</p>
+</section>
+
+<section>
+  <h2>Settings</h2>
+  <p><b>General</b></p>
+  <ul>
+    <li><b>Dark theme</b> — light, dark or follow the system.</li>
+    <li><b>Map</b> — OpenStreetMap styles: Liberty (detailed streets), Bright, Positron (light) or
+    Dark.</li>
+    <li><b>Check for updates</b> — looks for a new Tears GPS release on GitHub when the app
+    starts.</li>
+    <li><b>Use joystick</b> — tap to show or hide the floating joystick.</li>
+    <li><b>Joystick speed</b> — speed at full push: walk 5, run 11, bike 20, car 50 km/h.</li>
+  </ul>
+  <p><b>Xposed</b></p>
+  <ul>
+    <li><b>Hook system location</b> — on: every app gets the simulated location; off: only apps
+    ticked in the LSPosed scope. Applies immediately.</li>
+    <li><b>Accuracy</b> — the accuracy (in metres) reported with the simulated fix. A real phone
+    outdoors reports roughly 3–15 m.</li>
+    <li><b>Random location</b> — adds a small random offset (up to a few tens of metres) around
+    the point on every update, so the position looks like normal GPS jitter instead of a
+    perfectly fixed point.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The map</h2>
+  <ul>
+    <li><b>Tap</b> — moves the point and shows its coordinates (with <b>Copy</b>).</li>
+    <li><b>Long-press</b> — Copy, <b>Route from here (A)</b> or <b>Route to here (B)</b>, without
+    moving the point.</li>
+    <li><b>Search</b> — address, place or coordinates like <code>42.69, 23.32</code>.</li>
+    <li><b>◎ button</b> — goes to the simulated point while spoofing is on, to your real location
+    when it is off.</li>
+    <li><b>☆</b> — save the point as a favorite.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Joystick</h2>
+  <p><b>Settings → Use joystick</b> shows a floating joystick over other apps (it needs the
+  "display over other apps" permission and a started point).</p>
+  <ul>
+    <li>Push gently to walk slowly, fully for full speed.</li>
+    <li><b>Joystick speed</b>: walk 5, run 11, bike 20 or car 50 km/h.</li>
+    <li>Its notification has <b>Record</b> and <b>Stop</b>.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Routes</h2>
+  <p><b>Menu → Routes</b></p>
+  <ul>
+    <li><b>Record</b> — start the joystick, tap <b>Record</b> in its notification, move around,
+    then <b>Save</b>. Pauses are kept.</li>
+    <li><b>New route A → B</b> — <b>From</b> (empty = current point) and <b>To</b> (address, place
+    or coordinates like <code>42.87, 25.32</code>). Tip: long-press the map to fill them in.</li>
+    <li><b>Car</b> — real road speeds: every stretch is driven at the speed its road type and
+    limit allow, so 30–50 km/h in town, faster on main roads and motorways, slowing down in
+    turns. A 2 h trip takes 2 h.</li>
+    <li><b>Bike</b> / <b>Foot</b> — cycling and walking speeds on bike paths, footways and
+    streets.</li>
+    <li><b>Play</b> — once, with the route's own timing (recorded pauses included).</li>
+    <li><b>Play in a loop</b> — starts again from the beginning at the end; meant for laps
+    (a park, a stadium).</li>
+    <li><b>Round trip</b> — A → B, stays at B for 1, 3, 5, 10, 20 or 30 min or 1, 2, 4, 6, 12 or
+    24 h, then comes back B → A and stops. The way back is a separately calculated real route
+    (one-way streets differ).</li>
+    <li><b>Rename</b> / <b>Delete</b> — manage saved routes. <b>Stop playback</b> appears while a
+    route is playing.</li>
+  </ul>
+  <p>The notification shows the progress (<code>→ B</code>, time left at the destination,
+  <code>← A</code>) and a <b>Stop</b> button; tap it to open the map at the current position.
+  <b>■</b> in the app stops spoofing and the route together; <b>Stop</b> in the notification ends
+  only the route and keeps the point where it is.</p>
+</section>
+
+<section>
+  <h2>Keeping it running</h2>
+  <ul>
+    <li>Routes keep moving with the screen off.</li>
+    <li>If the system kills the app, routes and the joystick come back by themselves and continue
+    from where they should be now.</li>
+    <li>After a <b>Force stop</b>, Android does not allow any restart until you open the app again;
+    the route then continues from the right place.</li>
+  </ul>
+  <div class="note">On Xiaomi / HyperOS: enable <b>Autostart</b>, set battery saver to
+  <b>No restrictions</b> and lock Tears GPS in the recent apps screen.</div>
+</section>
+
+<section>
+  <h2>Privacy and network</h2>
+  <ul>
+    <li>No accounts, no analytics, no ads.</li>
+    <li>Creating an A → B route sends the start and end points to the OSRM routing server of
+    FOSSGIS (routing.openstreetmap.de).</li>
+    <li>Searching a place may send the text to OpenStreetMap Nominatim when the phone's own
+    geocoder finds nothing.</li>
+    <li>Saved routes stay on the device. Playing them needs no internet.</li>
+  </ul>
+</section>
+
+<details>
+  <summary>Troubleshooting</summary>
+  <p>Module log (expect <code>hooking system_server</code> and
+  <code>LocationProviderManager: 2 hook(s)</code>):</p>
+  <pre><code>su -c '/system/bin/grep -ihE "tearsgps" /data/adb/lspd/log/modules_*.log | /system/bin/tail -20'</code></pre>
+  <p>Last app crash:</p>
+  <pre><code>su -c '/system/bin/logcat -d | /system/bin/grep -A 20 "FATAL EXCEPTION" | /system/bin/tail -40'</code></pre>
+  <ul>
+    <li><b>Location not changed</b> — System Framework ticked in the scope? Rebooted after enabling?
+    Point started (■ visible)?</li>
+    <li><b>"Module not active"</b> — the module is disabled in LSPosed or LSPosed does not support
+    API 102.</li>
+    <li><b>Route failed</b> — no internet, or the routing server is busy; try again.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>How it was made</summary>
+  <p>Tears GPS revives GPS Setter, abandoned since March 2025 on the legacy Xposed API. It was
+  ported to the modern <b>libxposed API 102</b>, rebuilt on a current toolchain and extended with
+  new features. Built and tested on a Poco F6 Pro with HyperOS.</p>
+  <p><b>Main changes</b></p>
+  <ul>
+    <li>Legacy Xposed API 93 → libxposed API 102; settings through LSPosed Remote Preferences
+    instead of deprecated world-readable files.</li>
+    <li>System-wide live spoofing on Android 14+ (every location report in the system is
+    rewritten, not only the last known location).</li>
+    <li>Live settings without reboot; raw GNSS data blocked while spoofing.</li>
+    <li>New: working joystick, route recording and playback, road routes A → B, round trips,
+    map point picking, better search, screen-off and kill-proof playback.</li>
+    <li>Fixed crashes and bugs from the original (favorites, search, joystick and more).</li>
+  </ul>
+  <p><b>Languages and tools</b>: Kotlin, Gradle (Groovy DSL), XML, Bash.</p>
+  <div class="scroll">
+  <table>
+    <tr><th>Toolchain</th><th>Before</th><th>Now</th></tr>
+    <tr><td>Gradle</td><td>8.9</td><td>9.5.0</td></tr>
+    <tr><td>Android Gradle Plugin</td><td>8.7.2</td><td>9.3.1</td></tr>
+    <tr><td>Kotlin</td><td>2.1.10</td><td>2.4.20</td></tr>
+    <tr><td>KSP / Hilt</td><td>2.1.10-1.0.29 / 2.55</td><td>2.3.12 / 2.60.1</td></tr>
+    <tr><td>compileSdk</td><td>34</td><td>37</td></tr>
+  </table>
+  </div>
+  <p></p>
+  <div class="scroll">
+  <table>
+    <tr><th>Library</th><th>Before</th><th>Now</th></tr>
+    <tr><td>Xposed API</td><td>legacy XposedBridge</td><td>libxposed api + service 102.0.0</td></tr>
+    <tr><td>AndroidX Core</td><td>1.9.0</td><td>1.19.1</td></tr>
+    <tr><td>AppCompat</td><td>1.7.0-alpha01</td><td>1.8.0</td></tr>
+    <tr><td>Activity</td><td>1.6.1</td><td>1.13.0</td></tr>
+    <tr><td>Lifecycle</td><td>2.6.0-alpha04</td><td>2.11.0</td></tr>
+    <tr><td>Room</td><td>2.5.0</td><td>2.8.5</td></tr>
+    <tr><td>ConstraintLayout</td><td>2.2.0-alpha05</td><td>2.2.2</td></tr>
+    <tr><td>DrawerLayout</td><td>1.2.0-alpha01</td><td>1.2.0</td></tr>
+    <tr><td>DataStore</td><td>1.0.0</td><td>1.2.1</td></tr>
+    <tr><td>Preference</td><td>1.2.0</td><td>1.2.1</td></tr>
+    <tr><td>Material Components</td><td>1.12.0</td><td>1.14.0</td></tr>
+        <tr><td>MapLibre / microG location</td><td>11.8.2 / 0.3.6</td><td>13.6.1 / 0.3.14</td></tr>
+    <tr><td>Retrofit</td><td>2.9.0</td><td>3.0.0</td></tr>
+    <tr><td>HiddenApiBypass</td><td>4.3</td><td>6.1</td></tr>
+  </table>
+  </div>
+</details>
+
+<section class="credits">
+  <h2>Credits</h2>
+  <ul>
+    <li><b>Android1500</b> — original GpsSetter (2022–2023).
+      <a href="https://github.com/Android1500/GpsSetter">github.com/Android1500/GpsSetter</a></li>
+    <li><b>jqssun</b> — android-gps-setter, Android 14+ support (2024–2025).
+      <a href="https://github.com/jqssun/android-gps-setter">github.com/jqssun/android-gps-setter</a></li>
+    <li><b>Tears Burn (nikakvo)</b> — Tears GPS: libxposed API 102 port, system-wide live
+      spoofing, joystick, routes, toolchain modernization (2026).</li>
+  </ul>
+  <p><b>Built with</b></p>
+  <ul>
+    <li><a href="https://github.com/LSPosed/LSPosed">LSPosed</a> and the libxposed API</li>
+    <li>Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL)</li>
+    <li>Routing: <a href="https://project-osrm.org">OSRM</a>, servers by
+      <a href="https://routing.openstreetmap.de">FOSSGIS</a> ·
+      Search: <a href="https://nominatim.org">Nominatim</a></li>
+    <li>Maps: <a href="https://maplibre.org">MapLibre</a> with
+      <a href="https://openfreemap.org">OpenFreeMap</a> · location client: <a href="https://microg.org">microG</a></li>
+    <li>Joystick view: controlwear virtual-joystick-android (lukkass222 fork) ·
+      AndroidHiddenApiBypass by LSPosed · AndroidX, Material Components, Dagger/Hilt, Retrofit, Timber</li>
+  </ul>
+  <p><b>License</b></p>
+  <p>Tears GPS is free software under the
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0</a>,
+    like the projects it is based on. It comes with ABSOLUTELY NO WARRANTY. Source code:
+    <a href="https://github.com/nikakvo/tears-gps">github.com/nikakvo/tears-gps</a></p>
+</section>
+
+<script>
+  // Wrap every command block with a Copy button (copies the exact text).
+  document.querySelectorAll('pre').forEach(function (pre) {
+    var box = document.createElement('div');
+    box.className = 'cmd';
+    pre.parentNode.insertBefore(box, pre);
+    box.appendChild(pre);
+    var btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.textContent = 'Copy';
+    btn.onclick = function () {
+      TearsGPS.copy(pre.innerText.trim());
+      btn.textContent = '✓ Copied';
+      btn.classList.add('done');
+      setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1500);
+    };
+    box.appendChild(btn);
+  });
+</script>
+
+<div class="footer">Tears GPS v{{VERSION}} · Use responsibly and respect the rules of the apps and services you use.</div>
+
+</body>
+</html>

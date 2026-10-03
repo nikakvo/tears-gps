@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FOSS build: OpenFreeMap styles instead of Google map types (no satellite without a key) -->
+    <string-array name="map_type">
+        <item>Liberty (detailed)</item>
+        <item>Bright</item>
+        <item>Positron (light)</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="map_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+</resources>
