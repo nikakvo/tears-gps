@@ -6,6 +6,8 @@ import android.location.Location
 import android.location.LocationManager
 import android.location.LocationRequest
 import android.os.Build
+import android.os.ParcelFileDescriptor
+import android.os.SystemClock
 import android.util.Log
 import io.github.jqssun.gpssetter.BuildConfig
 import io.github.libxposed.api.XposedModule
@@ -16,9 +18,10 @@ import kotlin.math.cos
 /**
  * Location hooks, ported from the legacy XposedBridge API to libxposed API 102.
  *
- * Settings come from the framework's remote preferences (group ModuleBridge.PREFS_GROUP),
- * written by the module UI. They are read live on every hooked call, so starting/stopping
- * or moving the point takes effect without a reboot, also in system_server.
+ * Settings are written by the module UI and read live on every hooked call, so starting/stopping
+ * or moving the point takes effect without a reboot. system_server reads the framework's remote
+ * preferences (group ModuleBridge.PREFS_GROUP); app processes read the same keys from a small
+ * remote file (ModuleBridge.LIVE_FILE), see [live].
  */
 @SuppressLint("NewApi")
 object LocationHook {
@@ -63,12 +66,51 @@ object LocationHook {
         }
     }
 
-    private val isStarted get() = prefs()?.getBoolean("start", false) ?: false
-    private val isHookedSystem get() = prefs()?.getBoolean("system_hooked", true) ?: false
-    private val isRandomPosition get() = prefs()?.getBoolean("random_position", false) ?: false
-    private val baseLat get() = (prefs()?.getFloat("latitude", 45.0f) ?: 45.0f).toDouble()
-    private val baseLng get() = (prefs()?.getFloat("longitude", 0.0f) ?: 0.0f).toDouble()
-    private val accuracySetting get() = prefs()?.getString("accuracy_level", "10") ?: "10"
+    // ---- live settings outside system_server ------------------------------------------------
+    // The framework delivers remote-preference CHANGES to system_server, but a running app
+    // process may never receive them and keeps the values from its own start: a route seemed
+    // frozen, or the fake point stayed after stopping, until the app was restarted. So app
+    // processes re-read the same keys from a small remote file (written by the UI on every
+    // change); openRemoteFile opens it fresh each time, cached for LIVE_MS. Missing or
+    // unreadable file -> remote preferences as before.
+    @Volatile private var inSystemServer = false
+    private const val LIVE_MS = 3000L
+    @Volatile private var liveAt = 0L
+    @Volatile private var liveMap: Map<String, String>? = null
+
+    private fun live(): Map<String, String>? {
+        if (inSystemServer) return null // remote preferences are live there
+        val now = SystemClock.elapsedRealtime()
+        if (liveAt != 0L && now - liveAt < LIVE_MS) return liveMap
+        liveAt = now
+        liveMap = try {
+            val text = ParcelFileDescriptor.AutoCloseInputStream(module.openRemoteFile(ModuleBridge.LIVE_FILE))
+                .bufferedReader().use { it.readText() }
+            text.lines().filter { '=' in it }
+                .associate { it.substringBefore('=') to it.substringAfter('=') }
+                .takeIf { it["end"] == "1" } // only a completely written file
+        } catch (_: Throwable) {
+            null
+        }
+        return liveMap
+    }
+
+    // An empty value means the UI has never set the key: fall back like a missing key would.
+    private fun bool(key: String, def: Boolean): Boolean =
+        live()?.get(key)?.takeIf { it.isNotEmpty() }?.let { it == "1" } ?: prefs()?.getBoolean(key, def) ?: def
+
+    private fun float(key: String, def: Float): Float =
+        live()?.get(key)?.takeIf { it.isNotEmpty() }?.toFloatOrNull() ?: prefs()?.getFloat(key, def) ?: def
+
+    private fun string(key: String, def: String): String =
+        live()?.get(key)?.takeIf { it.isNotEmpty() } ?: prefs()?.getString(key, def) ?: def
+
+    private val isStarted get() = bool("start", false)
+    private val isHookedSystem get() = bool("system_hooked", true)
+    private val isRandomPosition get() = bool("random_position", false)
+    private val baseLat get() = float("latitude", 45.0f).toDouble()
+    private val baseLng get() = float("longitude", 0.0f).toDouble()
+    private val accuracySetting get() = string("accuracy_level", "10")
 
     private fun refresh(interval: Long) {
         if (System.currentTimeMillis() - mLastUpdated <= interval) return
@@ -191,6 +233,7 @@ object LocationHook {
 
     fun hookSystemServer(module: XposedModule, cl: ClassLoader) {
         this.module = module
+        inSystemServer = true
         module.log(Log.INFO, TAG, "hooking system_server")
 
         // Hooks are always installed; whether they act is decided per call from the live
